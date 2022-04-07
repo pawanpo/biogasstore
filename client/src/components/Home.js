@@ -117,7 +117,7 @@ const Home = ()=>{
     
             <div class="overflow-auto h-screen pb-24 px-4 md:px-6">
                 <h1 class="text-4xl font-semibold text-black">
-                    Home!!
+                    Home!!!
                 </h1>
                 <h2 class="text-md text-gray-400">
                     Welcome, Happy Managing!
