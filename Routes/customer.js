@@ -133,7 +133,7 @@ router.post('/addOrder',(req,res)=>{
                 //         }
                 //     ]
                 // })
-                res.json({flight})
+                res.json({order})
             })
 })
 
