@@ -217,7 +217,7 @@ var TotalCredit = 0
         
         id: customerid,
         paid:paid,
-
+        TotalCredit
         
       })
       

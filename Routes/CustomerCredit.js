@@ -83,7 +83,6 @@ router.get('/creditor/:id',RequireLogin,(req,res)=>{
                             return res.status(422).json({error:err})
                         }
 
-                        console.log("credits to show")
                         res.json({customer,credits})
                     })
             }).catch(err=>{
@@ -112,7 +111,6 @@ router.delete('/deleteCredit/:id',RequireLogin,(req,res)=>{
 
            sales.save()
                 .then(sales=>{
-                    console.log("Added to sales")
                     res.json({result,sales})
                 })
 

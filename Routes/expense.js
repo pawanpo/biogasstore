@@ -39,7 +39,6 @@ router.get('/getExpenses',RequireLogin,(req,res)=>{
 
                 var sumExpense
 
-                console.log(expenses)
 
                 if(expenses!=null){
                     sumExpense = expenses.map(expenses => expenses.amount).reduce((sum, expenses) => sum + expenses);

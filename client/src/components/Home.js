@@ -20,11 +20,6 @@ const Home = ()=>{
     const {state, dispatch}= useContext(UserContex)
 
   
-
-
-
-    
-  
     useEffect(  ()=>{
   
       fetch(`/RevinewSummary`,{
@@ -287,12 +282,40 @@ const Home = ()=>{
                     </Link>
 
     
+                    {/* <Link to="/singlebill">
+                    <div class="shadow-lg rounded-2xl p-4 bg-white dark:bg-gray-800">
+    <div class="flex items-center">
+    <svg class="h-8 w-8 text-purple-500"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M9 5H7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2V7a2 2 0 0 0 -2 -2h-2" />  <rect x="9" y="3" width="6" height="4" rx="2" />  <line x1="9" y1="12" x2="9.01" y2="12" />  <line x1="13" y1="12" x2="15" y2="12" />  <line x1="9" y1="16" x2="9.01" y2="16" />  <line x1="13" y1="16" x2="15" y2="16" /></svg>
+        <p class="text-md text-black dark:text-white ml-2">
+            Single Sale
+        </p>
+    </div>
+    <div class="flex flex-col justify-start">
+        <p class="text-gray-700 dark:text-gray-100 text-4xl text-left font-bold my-4">
+            Nu. {salesData}
+           
+        </p>
+        <div class="flex items-center text-green-500 text-sm">
+        <svg class="h-8 w-8 text-green-500"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+</svg>
+
+            <span>
+                Add Sales without customer
+            </span>
+            
+        </div>
+    </div>
+</div>
+
+
+                    </Link> */}
                     <Link to="/allSales">
                     <div class="shadow-lg rounded-2xl p-4 bg-white dark:bg-gray-800">
     <div class="flex items-center">
     <svg class="h-8 w-8 text-purple-500"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M9 5H7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2V7a2 2 0 0 0 -2 -2h-2" />  <rect x="9" y="3" width="6" height="4" rx="2" />  <line x1="9" y1="12" x2="9.01" y2="12" />  <line x1="13" y1="12" x2="15" y2="12" />  <line x1="9" y1="16" x2="9.01" y2="16" />  <line x1="13" y1="16" x2="15" y2="16" /></svg>
         <p class="text-md text-black dark:text-white ml-2">
-            Sales
+            All Sales
         </p>
     </div>
     <div class="flex flex-col justify-start">
@@ -370,9 +393,7 @@ const Home = ()=>{
  <tbody className="bg-white">
             {data ? data.map(item=>{
               return(
-
-                
-            
+          
               <tr data-href="/profile" key={item._id} style={{cursor:"pointer"}}>
 
                   <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200"

@@ -12,6 +12,7 @@ import AllSales from './components/AllSales';
 import Customer from './components/Customer';
 import Expense from './components/Expense';
 import Orders from './components/Orders'
+import SingleSales from './components/SingleBill';
 import {reducer,initialState} from './reducers/userReducer'
 
 
@@ -67,6 +68,9 @@ const Routing = ()=>{
         </Route>
         <Route path='/allSales'>
           <AllSales />
+        </Route>
+        <Route path='/singlebill'>
+          <SingleSales />
         </Route>
         <Route path='/expenses'>
           <Expense />

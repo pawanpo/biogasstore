@@ -53,19 +53,38 @@ router.post('/addCustomer', RequireLogin,(req,res)=>{
 
 router.put('/updatePaid',RequireLogin,(req,res)=>{
 
-    const {paid} = req.body
+    const {paid,TotalCredit} = req.body
 
+
+    if(TotalCredit==0){
+        console.log(TotalCredit)
+
+
+Customer.findByIdAndUpdate(
+
+                        
+            { _id: req.body.id},
+            {$set:{paid:0}},{new:true}
+            )
+            .then(updated=>{
+                res.json({message:"updated"})
+            })
+    }
+
+    else{
         Customer.findByIdAndUpdate(
-            
+
+                        
             { _id: req.body.id},
             { $inc: { paid: +paid}}
-
-
 
             )
             .then(updated=>{
                 res.json({message:"updated"})
             })
+    }
+
+        
 
 
 })
@@ -90,7 +109,6 @@ router.get('/customer/:id',RequireLogin,(req,res)=>{
                         if(err){
                             return res.status(422).json({error:err})
                         }
-                         console.log(customer)
                         res.json({customer,sales})
                     })
             }).catch(err=>{

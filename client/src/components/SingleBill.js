@@ -1,49 +1,109 @@
 import React, {useContext, useRef, useEffect, useState} from 'react'
-import {Link, useHistory} from 'react-router-dom'
+import {useParams,Link, useHistory} from 'react-router-dom'
 import DatePicker from 'react-datepicker'
+import Select from "react-select";
+import {ExportCSV} from './ExportCSV';
+import NavBar from './nav';
+
 import {UserContex} from '../App'
 
-import NavBar from './nav'
-
-const Sales = ()=>{
+const SingleSales = ()=>{
 
 
   const history = useHistory()
   const {state, dispatch}= useContext(UserContex)
 
   const  [data, setData]= useState([])
-
+  const  [salesData, setSalesData]= useState([])
+  const  [creditData, setCreditData]= useState([])
+  
   const [search,setSearch] = useState("")
 
-  const [addStock,setAddStock]= useState(false)
-  const[id,setId] = useState("")  
-  const[name,setName]= useState("")
-  const[phone,setPhone]= useState("")
-  const[address,setAddress]= useState("")
-  const[email,setEmail]= useState("")
-    
+  const [addSales,setAddSales]= useState(false)
+  const [addCredit,setAddCredit]= useState(false)
+  const[show,setShow] = useState(false)
 
+  const[name,setName]= useState("")
+  const[stockName,setStockName]= useState([])
+  const[Sumsales,setSumSales]= useState([])
+  const[quantity,setQuantity]= useState()
+  
+
+  const [options,setOptions] = useState({});
+  const fileName = 'Bill'
+
+
+    
+  const {customerid} =useParams()
 
 
   useEffect(  ()=>{
 
-    fetch('/getCustomer',{
+    fetch(`/getSales`,{
       headers:{
           Authorization: "Bearer " +localStorage.getItem("jwt")
           
       }
   }).then(res=>res.json())
   .then(result=>{
-      setData(result.customers)
+
+      setSalesData(result.sales)
+      setShow(true);
       
   })
+
+
+  fetch(`/RevinewSummary`,{
+    headers:{
+        Authorization: "Bearer " +localStorage.getItem("jwt")
+        
+    }
+}).then(res=>res.json())
+.then(result=>{
+
+    setSumSales(result.SalesSum[0].TotalSalesAmount)
+    
+})
+
+   
+
+    fetch(`/getStock`,{
+      headers:{
+          Authorization: "Bearer " +localStorage.getItem("jwt")
+          
+      }
+  }).then(res=>res.json())
+  .then(result=>{
+
+    const options = result.stocks.map(d => (
+      
+      d.quantity!=0 ?
+      
+      {
+            
+        value : d._id,
+        label : d.name,
+        rate: d.rate
+      }
+      :<> </>
+    
+    
+      ))
+
+      setOptions(options)
+  })
+
+
+
+
+
 
   },[])
 
 
-  const postStock = ()=>{
+  const postSales = ()=>{
 
-    fetch('/addCustomer',{
+    fetch('/addSales',{
 
       method:"post",
       headers:{
@@ -52,44 +112,10 @@ const Sales = ()=>{
 
       },
       body: JSON.stringify({
-        name:name,
-        phone:phone,
-        email:email,
-        address:address
-      })
-      
-    }).then(res=>res.json())
-    .then(data=>{
-      if(data.error){
-        console.log("Error")
-      }
-
-      else{
-        
-            history.push(`singlerecord/${data.customer._id}`)
-
-      }
-    })
-    .catch(err=>{
-      console.log(err)
-    })
-
-  }
-
-
-  const postStockUpdate = ()=>{
-
-    fetch('/updateStock',{
-
-      method:"put",
-      headers:{
-        "Content-Type":"application/json",
-        Authorization: "Bearer " +localStorage.getItem("jwt")
-
-      },
-      body: JSON.stringify({
-        
-        name:name,
+        id:stockName.value,
+        name:stockName.label,
+        quantity:quantity,
+        amount:quantity*stockName.rate,
         
       })
       
@@ -98,18 +124,27 @@ const Sales = ()=>{
       if(data.error){
         console.log("Error")
       }
+    
 
       else{
-        window.location.reload(false);
+
+        //console.log(data.sold)
+          // setSalesData(data.sold)  
+
+          window.location.reload(false);
+
+
       }
     })
     .catch(err=>{
       console.log(err)
     })
-    history.push('/inventory')
 
   }
+  
 
+
+  
 
 
 
@@ -119,12 +154,11 @@ const Sales = ()=>{
 
     setSearch(query)
 
-    fetch('/search-customer',{
+    fetch('/search-sales',{
 
       method:"post",
       headers:{
         Authorization: "Bearer " +localStorage.getItem("jwt"),
-
         "Content-Type":"application/json"
 
       },
@@ -135,7 +169,8 @@ const Sales = ()=>{
     }).then(res=> res.json())
       .then(results=>{
         
-        setData(results.stock)
+        
+        setSalesData(results.sale)
       })
 
 
@@ -166,35 +201,38 @@ return(
 
         <div className="flex-1 flex flex-col overflow-hidden ">
 
-            
-        <NavBar/>
+            <NavBar/>
+
 
 
             <main className="flex-1 overflow-x-hidden overflow-y-auto bg-white">
   <div className="container mx-auto px-6 py-8">
-    <h3 className="text-gray-400 text-3xl font-medium">Customer</h3>
+    <h3 className="text-gray-400 text-3xl font-medium">Single Bill</h3>
 
 
 <div className="flex flex-row ...">
 
 
 <div class="shadow-lg rounded-xl bg-gray-200 w-full md:w-64 p-6 bg-white dark:bg-gray-500 relative overflow-hidden">
-    <p class="text-black text-xl">
-        Customers
-    </p>
+   
     <div class="flex items-center my-4 text-blue-500 rounded justify-between">
         <span class="rounded-lg p-2 bg-white">
-        <svg class="h-8 w-8 text-gray-500"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <circle cx="9" cy="7" r="4" />  <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />  <path d="M16 3.13a4 4 0 0 1 0 7.75" />  <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></svg>        </span>
+
+
+        <svg class="h-8 w-8 text-green-500"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <rect x="7" y="9" width="14" height="10" rx="2" />  <circle cx="14" cy="14" r="2" />  <path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2" /></svg>
+</span>
         <div class="flex flex-col w-full ml-2 items-start justify-evenly">
+        <p class="text-black text-xl">
+        Nu. {Sumsales}
+    </p>
             <p class="text-black text-lg">
-                {data.length}
+                Total Sales
             </p>
             <p class="text-gray-700 text-sm">
-                Total Customers
             </p>
         </div>
     </div>
-   
+{/*    
     <div class="mt-4">
         <button type="button" class="py-2 px-4  bg-black hover:bg-gray-400 focus:ring-gray-400 focus:ring-offset-gray-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md "
         
@@ -202,7 +240,7 @@ return(
         >
             Add Customer +
         </button>
-    </div>
+    </div> */}
 </div>
 
 
@@ -213,123 +251,6 @@ return(
    
     
     <br></br>
-
-    {
-addStock? 
-(
-  <>
-    <div
-      className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-    >
-      <div className="relative w-auto my-6  relative w-auto my-6 mx-auto ">
-        {/*content*/}
-        <div className=" border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-          {/*header*/}
-          <div className="flex rounded-full items-start  p-5 ">
-            
-            <button
-              className="p-1 ml-auto rounded-full bg-red-500 text-white text-3 "
-              onClick={() => setAddStock(false)}
-            >
-<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>            </button>
-          </div>
-          {/*body*/}
-          <div className="relative p-6 flex-auto">
-           
-          <form >
-
-
-
-            
-        <div className=" overflow-hidden sm:rounded-md">
-          <div className="px-4 py-5 bg-white sm:p-6">
-            <div className="grid grid-cols-6 gap-6">
-              <div className="col-span-6 sm:col-span-4">
-                <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">Name</label>
-                <input type="text" 
-                name="first_name"
-                 id="first_name" 
-                 autoComplete="given-name"
-                className="rounded-lg w-full
-                bg-white border-2 border-gray-300 placeholder-gray-400  focus:placeholder-gray-200 focus:bg-white focus:border-indigo-300  focus:outline-none" 
-                value={name}
-                onChange={(e)=>setName(e.target.value)}  
-                  />
-              </div>
-              
-          
-              <div className="col-span-6 sm:col-span-4">
-                <label htmlFor="email_address" className="block text-sm font-medium text-gray-700">Phone</label>
-               <input type="number"  className="rounded-lg w-full
-                bg-white border-2 border-gray-300 placeholder-gray-400  focus:placeholder-gray-200 focus:bg-white focus:border-indigo-300  focus:outline-none" 
-                
-                value={phone}
-                onChange={(e)=>setPhone(e.target.value)} 
-                ></input>
-              </div>
-              <div className="col-span-6 sm:col-span-4">
-                <label htmlFor="email_address" className="block text-sm font-medium text-gray-700">Email</label>
-               <input type="text"  className="rounded-lg w-full
-                bg-white border-2 border-gray-300 placeholder-gray-400  focus:placeholder-gray-200 focus:bg-white focus:border-indigo-300  focus:outline-none" 
-                value={email}
-                onChange={(e)=>setEmail(e.target.value)} 
-                ></input>
-              </div>
-              <div className="col-span-6 sm:col-span-4">
-                <label htmlFor="email_address" className="block text-sm font-medium text-gray-700">Address</label>
-               <input type="text"  className="rounded-lg w-full
-                bg-white border-2 border-gray-300 placeholder-gray-400  focus:placeholder-gray-200 focus:bg-white focus:border-indigo-300  focus:outline-none" 
-                value={address}
-                onChange={(e)=>setAddress(e.target.value)} 
-                ></input>
-              </div>
-
-
-
-          
-              
-            </div>
-              
-       
-          </div>
-          
-          
-        </div>
-
-
-      </form>
-          </div>
-          
-          <div className="flex items-center  justify-end p-6 ">
-            <button
-              className="bg-red-500 text-white active:bg-green-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
-              type="button"
-              style={{ transition: "all .15s ease"  }}
-              onClick={() => setAddStock(false)}
-            >
-              Cancel
-            </button>
-            <button
-              className="bg-blue-400 text-white active:bg-green-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
-              type="button"
-              style={{ transition: "all .15s ease" }}
-              onClick={() => {setAddStock(false);postStock()}}
-            >
-              Add Customer 
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-  </>
-)
-
-
-:null
-
-}
-  
 
 
 
@@ -354,53 +275,204 @@ addStock?
  
 <br/>
 
- 
-<div class="container flex flex-col  w-full  sm:items-center justify-center  ">
-    <ul class="flex flex-col ">
-       
-       { data.map(item=>{
-                      
-                      
-                      console.log(item._id);
 
 
-            return(
+<div class="flex space-x-4">
+
+  <ExportCSV   csvData={salesData} fileName={fileName} />
 
 
-                <Link to={`/singlerecord/${item._id}`}>
-                <li class="border-gray-400 flex flex-row mb-2">
-                <div class="shadow border select-none cursor-pointer bg-white dark:bg-gray-800 rounded-md flex flex-1 items-center p-4">
-                   
-                    <div class="flex-1 pl-1 md:mr-16">
-                        <div class="font-medium dark:text-white">
-                            {item.name}
-                        </div>
-                        <div class="text-gray-600 dark:text-gray-200 text-sm">
-                            {item.address}
-                        </div>
-                    </div>
-                    <div class="flex md:space-x-8 space-x-6 w-14 h-10 justify-center items-center mr-4">
-                            {item.phone}                     
-                    </div>
-                                   
-                </div>
-            </li>
-                </Link>
-                
-         
-            )
 
-       })
-        
-
-
-       }
-
-       
-       
-    </ul>
 </div>
 
+
+
+<br/>
+
+
+ 
+  
+    {
+addSales? 
+(
+  <>
+    <div
+      className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+    >
+      <div className="relative w-auto my-6  relative w-auto my-6 mx-auto ">
+        {/*content*/}
+        <div className=" border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+          {/*header*/}
+          <div className="flex rounded-full items-start  p-5 ">
+            
+            <button
+              className="p-1 ml-auto rounded-full bg-red-500 text-white text-3 "
+              onClick={() => setAddSales(false)}
+            >
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>            </button>
+          </div>
+          {/*body*/}
+          <div className="relative p-6 flex-auto">
+           
+          <form >
+
+
+
+            
+        <div className=" overflow-hidden sm:rounded-md">
+          <div className="px-4 py-5 bg-white sm:p-6">
+            <div className="grid grid-cols-6 gap-6">
+              <div className="col-span-6 sm:col-span-4">
+                <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">Name</label>
+
+                <Select 
+            options={options}
+            value={stockName}
+            onChange={setStockName}
+            />
+                {/* <input type="text" 
+                name="first_name"
+                 id="first_name" 
+                 autoComplete="given-name"
+                className="rounded-lg w-full
+                bg-white border-2 border-gray-300 placeholder-gray-400  focus:placeholder-gray-200 focus:bg-white focus:border-indigo-300  focus:outline-none" 
+                value={name}
+                onChange={(e)=>setName(e.target.value)}  
+                  /> */}
+              </div>
+              
+         
+             
+          
+              <div className="col-span-6 sm:col-span-4">
+                <label htmlFor="email_address" className="block text-sm font-medium text-gray-700">quantity</label>
+               <input type="number"  className="rounded-lg w-full
+                bg-white border-2 border-gray-300 placeholder-gray-400  focus:placeholder-gray-200 focus:bg-white focus:border-indigo-300  focus:outline-none" 
+                
+                value={quantity}
+                onChange={(e)=>setQuantity(e.target.value)} 
+                ></input>
+              </div>
+              <div className="col-span-6 sm:col-span-4">
+                <label htmlFor="email_address" className="block text-sm font-medium text-gray-700">Amount</label>
+               <input type="number"  className="rounded-lg w-full
+                bg-white border-2 border-gray-300 placeholder-gray-400  focus:placeholder-gray-200 focus:bg-white focus:border-indigo-300  focus:outline-none" 
+                value={quantity*stockName.rate}
+                ></input>
+              </div>
+
+
+
+          
+              
+            </div>
+              
+       
+          </div>
+          
+          
+        </div>
+
+
+      </form>
+          </div>
+          
+          <div className="flex items-center  justify-end p-6 ">
+            <button
+              className="bg-red-500 text-white active:bg-green-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+              type="button"
+              style={{ transition: "all .15s ease"  }}
+              onClick={() => setAddSales(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-blue-400 text-white active:bg-green-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+              type="button"
+              style={{ transition: "all .15s ease" }}
+              onClick={() => {setAddSales(false); postSales() }}
+            >
+              Add Sales
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+  </>
+)
+
+
+:null
+
+}
+    
+
+
+
+
+
+<br/>
+
+<div>Sales</div>
+
+
+<button type="button" class="py-2 px-4 flex justify-center items-center  bg-blue-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+
+onClick={()=>setAddSales(true)}
+
+>
+<svg class="h-8 w-8 text-white"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+</svg>
+
+    Add Sales
+</button>
+
+<br/>
+<div className="flex ">
+      <div className="grid  grid-cols-2 md:grid-cols-6 space-x-1 space-y-1">
+
+    
+      
+            { salesData? salesData.map(item=>{
+
+              return(
+                <div className="   bg-white w-full flex items-center p-2 rounded-xl shadow-md border transition duration-500 transform hover:-translate-y-1 hover:scale-111 ease-in-out">
+                <div className="flex-grow p-5   ">
+                  
+                     <div className="font-semibold text-gray-700">
+                    {item.name}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    Quantity: {item.quantity}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    Amount: {item.amount}
+                  </div>
+                </div>
+              </div>
+
+              )
+
+            }):<>No Sales</>
+
+
+            }
+            
+           
+   
+   
+   
+     
+          
+        
+      
+      </div>
+     
+    </div>
+ 
+ 
    
   </div>
 </main>
@@ -415,4 +487,5 @@ addStock?
 }
 
 
-export default Sales
+
+export default SingleSales
