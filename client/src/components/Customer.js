@@ -1,6 +1,11 @@
 import React, {useContext, useRef, useEffect, useState} from 'react'
 import {useParams,Link, useHistory} from 'react-router-dom'
 import DatePicker from 'react-datepicker'
+
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Select from "react-select";
 import {ExportCSV} from './ExportCSV';
 
@@ -30,6 +35,9 @@ const Customer = ()=>{
   const[quantity,setQuantity]= useState()
   const[amount,setAmount]= useState()
   const[paid,setPaid]= useState()
+
+  const[searchmonth,setSearchMonth]= useState()
+  const[searcyear,setSearchYear]= useState()
   const[rate,setRate]= useState()
 
   const [options,setOptions] = useState({});
@@ -205,6 +213,28 @@ var TotalCredit = 0
 }
 
 
+
+  const deleteSales = (postId)=>{
+
+    fetch(`/deleteSale/${postId}`,{
+        method: "delete",
+        headers:{
+          "Content-Type":"application/json",
+          Authorization: "Bearer " +localStorage.getItem("jwt")
+        }
+    }).then(res=>res.json())
+    .then(result=>{
+
+      toast.error("Update the stock Quantity")
+
+      window.location.reload(false);
+
+    }).catch(err=>{
+        console.log(err)
+    })
+}
+
+
   const updatePaid = ()=>{
 
     fetch('/updatePaid',{
@@ -272,6 +302,48 @@ var TotalCredit = 0
     
 
 
+  const serviceBook=()=>{
+
+    
+    fetch("/search-creditdates",{
+      method:"post",
+      headers:{
+        Authorization: "Bearer " +localStorage.getItem("jwt"),
+
+          "Content-Type":"application/json",
+
+      },
+      body: JSON.stringify({
+        
+       
+       month:searchmonth,
+       year:searcyear
+        
+      })
+      
+  }).then(res=>res.json())
+  .then(data=> {
+
+    //console.log(data.expense)
+     
+      if(data.error){
+      }
+      else{
+
+        if(data.expense) setCreditData(data.expense)
+
+
+        // console.log(data.result)
+        
+           //history.push(`/home`)
+      }
+  })
+  .catch(err=>{
+      console.log(err)
+  })
+
+   }
+    
 return(
 
     <div>
@@ -293,6 +365,7 @@ return(
         <div className="flex-1 flex flex-col overflow-hidden ">
 
             
+        <ToastContainer/>
 
 
             <NavBar/>
@@ -358,9 +431,66 @@ return(
  
 <br/>
 
+<div class=" grid  grid-cols-3 md:grid-cols-6 space-x-2 space-y-1">
+
+<div class="flex flex-row ">
+  
+  <select class="rounded-full border-gray-50 " 
+  value={searchmonth}
+  onChange= {(e)=>setSearchMonth(e.target.value)}
+
+>
+<option selected value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+          <option value="06">June</option>
+          <option value="07">July</option>
+          <option value="08">August</option>
+          <option value="09">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+  </select> </div>
+<div class="flex flex-row ">
 
 
-<div class="flex space-x-4">credits
+<select class="rounded-full border-gray-50"
+
+value={searcyear}
+  onChange= {(e)=>setSearchYear(e.target.value)}
+
+>
+<option selected value="2018">2018</option>
+          <option value="2019">2019</option>
+          <option value="2020">2020</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+          <option value="2027">2027</option>
+          <option value="2028">2028</option>
+          <option value="2029">2029</option>
+          <option value="2030">2030</option>
+          </select>
+           </div>
+
+           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" 
+           
+           onClick={serviceBook}
+
+           > Get</button>
+
+
+
+</div>
+<br/>
+
+
+<div class="flex space-x-4">
 
   <ExportCSV   csvData={creditData} fileName={fileName} />
 
@@ -371,6 +501,8 @@ return(
 
 
 <br/>
+
+Credits
 <button type="button" class=" py-2 px-4 flex justify-center items-center  bg-green-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
 
 onClick={()=>setAddCredit(true)}
@@ -419,14 +551,17 @@ onClick={()=>setAddCredit(true)}
                   ></path>  
                   </svg></div>
                 <div className="text-sm text-gray-500">
-                  quantity: {item.quantity}
+                  Quantity: {item.quantity}
                 </div>
                 <div className="text-sm text-gray-500">
-                  rate : {item.price}
+                  Rate : {item.price}
                 </div>
             
                 <div className="text-sm text-gray-500">
-                  amount : {item.amount}
+                  Amount : {item.amount}
+                </div>
+                <div className="text-sm text-gray-500">
+                  Date : {item.date.substring(0,10)}
                 </div>
             
               </div>
@@ -772,12 +907,24 @@ onClick={()=>setAddSales(true)}
                      <div className="font-semibold text-gray-700">
                     {item.name}
                   </div>
+                  <div style={{cursor:"pointer"}} className="absolute top-1 right-1 text-red-600"
+                  
+                  onClick={()=>{if(window.confirm('Are you sure you want to delete?')) deleteSales(item._id)}}
+            
+                  >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            
+                  ></path>  
+                  </svg></div>
                   <div className="text-sm text-gray-500">
                     Quantity: {item.quantity}
                   </div>
                   <div className="text-sm text-gray-500">
                     Amount: {item.amount}
                   </div>
+                  <div className="text-sm text-gray-500">
+                  Date : {item.date.substring(0,10)}
+                </div>
                 </div>
               </div>
 

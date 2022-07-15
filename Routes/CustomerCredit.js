@@ -127,6 +127,44 @@ router.delete('/deleteCredit/:id',RequireLogin,(req,res)=>{
  })
 
 
+
+router.delete('/deleteSale/:id',RequireLogin,(req,res)=>{
+
+    Sales.findOne({_id:req.params.id})
+    .exec((err,post)=>{
+     if(err || !post){
+         return res.status(422).json({error:err})
+     }
+         post.remove()
+         .then(result=>{
+
+
+        //    Stock.findOneAndUpdate(
+        //     {name:result.name},
+        //     { $inc: { quantity : +result.quantity} })
+
+        // .then(ress=>{
+        //     console.log("sdf",ress)
+        // })
+
+
+
+                            res.json({result})             
+
+
+                    
+             
+         }).catch(err=>{
+             console.log(err)
+         })
+ 
+     
+ })
+  
+ 
+ })
+
+
  router.post('/search-credit',RequireLogin,(req,res)=>{
     let searchStock = new RegExp("^"+req.body.query);
     Credit.find({

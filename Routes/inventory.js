@@ -138,6 +138,42 @@ router.post('/search-sales',RequireLogin,(req,res)=>{
 
 
 
+router.post('/search-slaesdates',RequireLogin,(req,res)=>{
+    const month = req.body.month
+
+    const year = req.body.year
+
+    
+    Sales.aggregate(
+
+        [
+            {
+                "$redact": {
+                    "$cond": [
+                        { 
+                            "$and": [ 
+                                { "$eq": [ { "$month": "$date" }, parseInt(month) ] },
+                                { "$eq": [ { "$year": "$date" }, parseInt(year)] }
+                            ] 
+                        },
+                        "$$KEEP",
+                        "$$PRUNE"
+                    ]
+                }
+            }
+        ]
+        
+        )
+    .then(expense=>{
+        res.json({expense})
+    }).catch(err=>{
+        console.log(err)
+    })
+})
+
+
+
+
 
 //Stock Update
 

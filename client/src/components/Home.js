@@ -257,12 +257,12 @@ const Home = ()=>{
     <div class="flex items-center">
     <svg class="h-8 w-8 text-purple-500"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <circle cx="9" cy="7" r="4" />  <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />  <path d="M16 11h6m-3 -3v6" /></svg>
         <p class="text-md text-black dark:text-white ml-2">
-            Credits
+            Customer
         </p>
     </div>
     <div class="flex flex-col justify-start">
         <p class="text-gray-700 dark:text-gray-100 text-4xl text-left font-bold my-4">
-            Nu. {creditData}
+           Credits Nu. {creditData}
             
         </p>
         <div class="flex items-center text-green-500 text-sm">

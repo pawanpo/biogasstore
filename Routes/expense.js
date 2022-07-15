@@ -19,11 +19,7 @@ router.post('/addExpenses',RequireLogin,(req,res)=>{
 
     expense.save()
            .then(expense=>{
-
-
-           
-
-            
+       
             res.json({expense})
 
            })
@@ -59,10 +55,45 @@ router.post('/search-expense',RequireLogin,(req,res)=>{
     
     Expenses.find({
         "$or": [
-            { name: { '$regex': searchExpense } }
+            { name: { '$regex': searchExpense } },
+            { description: { '$regex': searchExpense } },
         ]    
        
     })
+    .then(expense=>{
+        console.log(expense)
+        res.json({expense})
+    }).catch(err=>{
+        console.log(err)
+    })
+})
+
+
+router.post('/search-expensedates',RequireLogin,(req,res)=>{
+    const month = req.body.month
+
+    const year = req.body.year
+    
+    Expenses.aggregate(
+
+        [
+            {
+                "$redact": {
+                    "$cond": [
+                        { 
+                            "$and": [ 
+                                { "$eq": [ { "$month": "$date" }, parseInt(month) ] },
+                                { "$eq": [ { "$year": "$date" }, parseInt(year)] }
+                            ] 
+                        },
+                        "$$KEEP",
+                        "$$PRUNE"
+                    ]
+                }
+            }
+        ]
+        
+        )
     .then(expense=>{
         res.json({expense})
     }).catch(err=>{

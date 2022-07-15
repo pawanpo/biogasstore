@@ -98,6 +98,41 @@ router.get('/RevinewSummary',RequireLogin,(req,res)=>{
 
 })
 
+
+router.post('/search-creditdates',RequireLogin,(req,res)=>{
+   const month = req.body.month
+
+   const year = req.body.year
+   
+   Credit.aggregate(
+
+       [
+           {
+               "$redact": {
+                   "$cond": [
+                       { 
+                           "$and": [ 
+                               { "$eq": [ { "$month": "$date" }, parseInt(month) ] },
+                               { "$eq": [ { "$year": "$date" }, parseInt(year)] }
+                           ] 
+                       },
+                       "$$KEEP",
+                       "$$PRUNE"
+                   ]
+               }
+           }
+       ]
+       
+       )
+   .then(expense=>{
+       res.json({expense})
+   }).catch(err=>{
+       console.log(err)
+   })
+})
+
+
+
 // router.post('/addCredit',RequireLogin, (req,res)=>{
 
 //     const {item, price,quantity,creditor,id} = req.body
