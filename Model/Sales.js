@@ -17,11 +17,6 @@ const salseSchema = new Schema({
         type:Number,
         require:true
     },
-    date:{
-        type:Date,
-        default: Date.now()
-    },
-
 
     customer:{
         type: Schema.Types.ObjectId,

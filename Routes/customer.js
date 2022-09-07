@@ -4,7 +4,6 @@ const mongoose = require('mongoose')
 const Stock = mongoose.model('stock')
 const Sales = mongoose.model('Sales')
 const Customer = mongoose.model('customer')
-const Order = mongoose.model('Order')
 
 const router = express.Router()
 
@@ -53,38 +52,19 @@ router.post('/addCustomer', RequireLogin,(req,res)=>{
 
 router.put('/updatePaid',RequireLogin,(req,res)=>{
 
-    const {paid,TotalCredit} = req.body
+    const {paid} = req.body
 
-
-    if(TotalCredit==0){
-        console.log(TotalCredit)
-
-
-Customer.findByIdAndUpdate(
-
-                        
-            { _id: req.body.id},
-            {$set:{paid:0}},{new:true}
-            )
-            .then(updated=>{
-                res.json({message:"updated"})
-            })
-    }
-
-    else{
         Customer.findByIdAndUpdate(
-
-                        
+            
             { _id: req.body.id},
             { $inc: { paid: +paid}}
 
+
+
             )
             .then(updated=>{
                 res.json({message:"updated"})
             })
-    }
-
-        
 
 
 })
@@ -109,6 +89,7 @@ router.get('/customer/:id',RequireLogin,(req,res)=>{
                         if(err){
                             return res.status(422).json({error:err})
                         }
+                         console.log(customer)
                         res.json({customer,sales})
                     })
             }).catch(err=>{
@@ -120,41 +101,6 @@ router.get('/customer/:id',RequireLogin,(req,res)=>{
 
 
 
-router.post('/addOrder',(req,res)=>{
-
-    const {name, phone, date,email,url} = req.body
-
-
-    const order = new Order({
-        name, phone, date,address, email
-    })
-
-    order.save()
-            .then(order=>{
-                // trnasporter.sendMail({
-                //     to: [email, "flightdrukings@gmail.com"] ,
-                //     from: "drukingsweb@gmail.com",
-                //     subject:"Registered Successfully",
-                //     html:`<h2>Thank You for Booking the fligh with us, we will get back to you shortly</h2>
-                //           <h3>Name : ${name}</h3>      
-                //           <h3>Phone : ${phone}</h3>      
-                //           <h3>Email : ${email}</h3>      
-                //           <h3>Date : ${date}</h3>      
-                //           <h3>Destination : ${destination}</h3>      
-                //     `,
-                //     attachments:[
-
-                //         {
-
-                //             path: url
-
-                //         }
-                //     ]
-                // })
-                res.json({order})
-            })
-})
-
 
 
 
@@ -162,8 +108,8 @@ router.post('/search-customer',RequireLogin,(req,res)=>{
     let searchStock = new RegExp("^"+req.body.query);
     Customer.find({
         "$or": [
-            { name: { '$regex': searchStock } },
-            { phone: { '$regex': searchStock} }
+            { name: { '$regex': searchStock,$options: "i" } },
+            { phone: { '$regex': searchStock,$options: "i"} }
         ]    
        
     })

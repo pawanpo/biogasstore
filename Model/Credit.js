@@ -22,10 +22,6 @@ const credit = new mongoose.Schema({
         type:Number,
         require: true
     },
-    date:{
-        type:Date,
-        default: Date.now()
-    },
 
     creditor:{
         type: mongoose.Schema.Types.ObjectId,

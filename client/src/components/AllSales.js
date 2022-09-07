@@ -27,8 +27,7 @@ const AllSales = ()=>{
   const[stockName,setStockName]= useState([])
   const[Sumsales,setSumSales]= useState([])
   const[quantity,setQuantity]= useState()
-  const[searchmonth,setSearchMonth]= useState()
-  const[searcyear,setSearchYear]= useState()
+  
 
   const [options,setOptions] = useState({});
   const fileName = 'Bill'
@@ -62,15 +61,7 @@ const AllSales = ()=>{
 }).then(res=>res.json())
 .then(result=>{
 
-
-
- // console.log(result.SalesSum[0].TotalSalesAmount)
- try{
-    if(result.SalesSum[0].TotalSalesAmount) setSumSales(result.SalesSum[0].TotalSalesAmount)
-
- }catch{
-  console.log("Error")
- }
+    setSumSales(result.SalesSum[0].TotalSalesAmount)
     
 })
 
@@ -185,51 +176,8 @@ const AllSales = ()=>{
 
   }
 
-
-
-  const serviceBook=()=>{
-
-    
-    fetch("/search-slaesdates",{
-      method:"post",
-      headers:{
-        Authorization: "Bearer " +localStorage.getItem("jwt"),
-
-          "Content-Type":"application/json",
-
-      },
-      body: JSON.stringify({
-        
-       
-       month:searchmonth,
-       year:searcyear
-        
-      })
-      
-  }).then(res=>res.json())
-  .then(data=> {
-
-    //console.log(data.expense)
-     
-      if(data.error){
-      }
-      else{
-
-        if(data.expense) setSalesData(data.expense)
-
-
-        // console.log(data.result)
-        
-           //history.push(`/home`)
-      }
-  })
-  .catch(err=>{
-      console.log(err)
-  })
-
-   }
-    
   
+    
 
 
 return(
@@ -275,7 +223,7 @@ return(
 </span>
         <div class="flex flex-col w-full ml-2 items-start justify-evenly">
         <p class="text-black text-xl">
-        Nu. {Sumsales?Sumsales:0}
+        Nu. {Sumsales}
     </p>
             <p class="text-black text-lg">
                 Total Sales
@@ -327,66 +275,6 @@ return(
  
 <br/>
 
-
-
-<br/>
-
-<div class=" grid  grid-cols-3 md:grid-cols-6 space-x-2 space-y-1">
-
-<div class="flex flex-row ">
-  
-  <select class="rounded-full border-gray-50 " 
-  value={searchmonth}
-  onChange= {(e)=>setSearchMonth(e.target.value)}
-
->
-<option selected value="01">January</option>
-          <option value="02">February</option>
-          <option value="03">March</option>
-          <option value="04">April</option>
-          <option value="05">May</option>
-          <option value="06">June</option>
-          <option value="07">July</option>
-          <option value="08">August</option>
-          <option value="09">September</option>
-          <option value="10">October</option>
-          <option value="11">November</option>
-          <option value="12">December</option>
-  </select> </div>
-<div class="flex flex-row ">
-
-
-<select class="rounded-full border-gray-50"
-
-value={searcyear}
-  onChange= {(e)=>setSearchYear(e.target.value)}
-
->
-<option selected value="2018">2018</option>
-          <option value="2019">2019</option>
-          <option value="2020">2020</option>
-          <option value="2021">2021</option>
-          <option value="2022">2022</option>
-          <option value="2023">2023</option>
-          <option value="2024">2024</option>
-          <option value="2025">2025</option>
-          <option value="2026">2026</option>
-          <option value="2027">2027</option>
-          <option value="2028">2028</option>
-          <option value="2029">2029</option>
-          <option value="2030">2030</option>
-          </select>
-           </div>
-
-           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" 
-           
-           onClick={serviceBook}
-
-           > Get</button>
-
-
-
-</div>
 
 
 <div class="flex space-x-4">
@@ -562,9 +450,6 @@ onClick={()=>setAddSales(true)}
                   <div className="text-sm text-gray-500">
                     Amount: {item.amount}
                   </div>
-                  <div className="text-sm text-gray-500">
-                  Date : {item.date.substring(0,10)}
-                </div>
                 </div>
               </div>
 

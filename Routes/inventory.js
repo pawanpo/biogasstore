@@ -119,7 +119,7 @@ router.get('/getSales',RequireLogin,(req,res)=>{
 
 router.post('/search-stock',RequireLogin,(req,res)=>{
     let searchStock = new RegExp("^"+req.body.query);
-    Stock.find({name:{$regex:searchStock}})
+    Stock.find({name:{$regex:searchStock,$options: "i"}})
     .then(stock=>{
         res.json({stock})
     }).catch(err=>{
@@ -128,49 +128,13 @@ router.post('/search-stock',RequireLogin,(req,res)=>{
 })
 router.post('/search-sales',RequireLogin,(req,res)=>{
     let searchStock = new RegExp("^"+req.body.query);
-    Sales.find({name:{$regex:searchStock}})
+    Sales.find({name:{$regex:searchStock,$options: "i"}})
     .then(sale=>{
         res.json({sale})
     }).catch(err=>{
         console.log(err)
     })
 })
-
-
-
-router.post('/search-slaesdates',RequireLogin,(req,res)=>{
-    const month = req.body.month
-
-    const year = req.body.year
-
-    
-    Sales.aggregate(
-
-        [
-            {
-                "$redact": {
-                    "$cond": [
-                        { 
-                            "$and": [ 
-                                { "$eq": [ { "$month": "$date" }, parseInt(month) ] },
-                                { "$eq": [ { "$year": "$date" }, parseInt(year)] }
-                            ] 
-                        },
-                        "$$KEEP",
-                        "$$PRUNE"
-                    ]
-                }
-            }
-        ]
-        
-        )
-    .then(expense=>{
-        res.json({expense})
-    }).catch(err=>{
-        console.log(err)
-    })
-})
-
 
 
 

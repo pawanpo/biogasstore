@@ -31,7 +31,6 @@ const Customer = ()=>{
   const[amount,setAmount]= useState()
   const[paid,setPaid]= useState()
   const[rate,setRate]= useState()
-  
 
   const [options,setOptions] = useState({});
   const fileName = 'Bill'
@@ -218,7 +217,7 @@ var TotalCredit = 0
         
         id: customerid,
         paid:paid,
-        TotalCredit
+
         
       })
       
@@ -267,8 +266,6 @@ var TotalCredit = 0
 
   
     
-
-
 
 
 return(
@@ -356,9 +353,6 @@ return(
 
  
 <br/>
-
-
-
 
 
 

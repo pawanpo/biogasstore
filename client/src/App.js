@@ -12,8 +12,10 @@ import AllSales from './components/AllSales';
 import Customer from './components/Customer';
 import Expense from './components/Expense';
 import Orders from './components/Orders'
-import SingleSales from './components/SingleBill';
 import {reducer,initialState} from './reducers/userReducer'
+import Shop from './components/Shop';
+import Products from './components/Products';
+import OrdersDashboard from './components/OrdersDashboard';
 
 
 
@@ -34,10 +36,11 @@ const Routing = ()=>{
      
     }else{
 
-      if(history.location.pathname.startsWith('/order')) { history.push('/order')
-    }
+      if(history.location.pathname.startsWith('/order')) { history.push('/order') }
+      if(history.location.pathname.startsWith('/products')) { history.push('/products') }
+      if(history.location.pathname.startsWith('/login')) { history.push('/login') }
     else{
-      history.push('/login')
+      history.push('/shop')
 
     }
     }
@@ -69,11 +72,11 @@ const Routing = ()=>{
         <Route path='/allSales'>
           <AllSales />
         </Route>
-        <Route path='/singlebill'>
-          <SingleSales />
-        </Route>
         <Route path='/expenses'>
           <Expense />
+        </Route>
+        <Route path='/ordersdashboard'>
+          <OrdersDashboard />
         </Route>
         <Route path='/singlerecord/:customerid'>
           <Customer />
@@ -97,7 +100,15 @@ function App() {
         <BrowserRouter>
         
           <Route exact path="/">
-            <Login />
+            <Shop />
+          </Route>
+         
+        
+          <Route exact path="/order">
+            <Orders />
+          </Route>
+          <Route exact path="/products">
+            <Products />
           </Route>
          
           

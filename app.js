@@ -19,6 +19,7 @@ mongoose.connection.on('error',(err)=>{
 })
 
 app.use( express.json())
+app.use('/pdf',express.static('pdf'));
 
 require('./Model/User')
 require('./Model/Stock')
@@ -34,6 +35,7 @@ app.use(require('./Routes/customer'))
 app.use(require('./Routes/credit'))
 app.use(require('./Routes/expense'))
 app.use(require('./Routes/CustomerCredit'))
+app.use(require('./Routes/Orders'))
 
 
 

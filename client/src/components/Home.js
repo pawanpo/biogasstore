@@ -20,6 +20,11 @@ const Home = ()=>{
     const {state, dispatch}= useContext(UserContex)
 
   
+
+
+
+    
+  
     useEffect(  ()=>{
   
       fetch(`/RevinewSummary`,{
@@ -112,7 +117,7 @@ const Home = ()=>{
     
             <div class="overflow-auto h-screen pb-24 px-4 md:px-6">
                 <h1 class="text-4xl font-semibold text-black">
-                    Home!!
+                    Home!!!
                 </h1>
                 <h2 class="text-md text-gray-400">
                     Welcome, Happy Managing!
@@ -257,12 +262,12 @@ const Home = ()=>{
     <div class="flex items-center">
     <svg class="h-8 w-8 text-purple-500"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <circle cx="9" cy="7" r="4" />  <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />  <path d="M16 11h6m-3 -3v6" /></svg>
         <p class="text-md text-black dark:text-white ml-2">
-            Customer
+            Credits
         </p>
     </div>
     <div class="flex flex-col justify-start">
         <p class="text-gray-700 dark:text-gray-100 text-4xl text-left font-bold my-4">
-           Credits Nu. {creditData}
+            Nu. {creditData}
             
         </p>
         <div class="flex items-center text-green-500 text-sm">
@@ -282,12 +287,12 @@ const Home = ()=>{
                     </Link>
 
     
-                    {/* <Link to="/singlebill">
+                    <Link to="/allSales">
                     <div class="shadow-lg rounded-2xl p-4 bg-white dark:bg-gray-800">
     <div class="flex items-center">
     <svg class="h-8 w-8 text-purple-500"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M9 5H7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2V7a2 2 0 0 0 -2 -2h-2" />  <rect x="9" y="3" width="6" height="4" rx="2" />  <line x1="9" y1="12" x2="9.01" y2="12" />  <line x1="13" y1="12" x2="15" y2="12" />  <line x1="9" y1="16" x2="9.01" y2="16" />  <line x1="13" y1="16" x2="15" y2="16" /></svg>
         <p class="text-md text-black dark:text-white ml-2">
-            Single Sale
+            Sales
         </p>
     </div>
     <div class="flex flex-col justify-start">
@@ -309,18 +314,19 @@ const Home = ()=>{
 </div>
 
 
-                    </Link> */}
+                    </Link>
+    
                     <Link to="/allSales">
                     <div class="shadow-lg rounded-2xl p-4 bg-white dark:bg-gray-800">
     <div class="flex items-center">
     <svg class="h-8 w-8 text-purple-500"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M9 5H7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2V7a2 2 0 0 0 -2 -2h-2" />  <rect x="9" y="3" width="6" height="4" rx="2" />  <line x1="9" y1="12" x2="9.01" y2="12" />  <line x1="13" y1="12" x2="15" y2="12" />  <line x1="9" y1="16" x2="9.01" y2="16" />  <line x1="13" y1="16" x2="15" y2="16" /></svg>
         <p class="text-md text-black dark:text-white ml-2">
-            All Sales
+            Orders
         </p>
     </div>
     <div class="flex flex-col justify-start">
         <p class="text-gray-700 dark:text-gray-100 text-4xl text-left font-bold my-4">
-            Nu. {salesData}
+            Nu.
            
         </p>
         <div class="flex items-center text-green-500 text-sm">
@@ -393,7 +399,9 @@ const Home = ()=>{
  <tbody className="bg-white">
             {data ? data.map(item=>{
               return(
-          
+
+                
+            
               <tr data-href="/profile" key={item._id} style={{cursor:"pointer"}}>
 
                   <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200"

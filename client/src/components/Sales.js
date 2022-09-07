@@ -355,7 +355,7 @@ addStock?
 <br/>
 
  
-<div class="container flex flex-col  w-full  sm:items-center justify-center  ">
+<div class="container flex flex-col mx-auto w-full items-center justify-center  ">
     <ul class="flex flex-col ">
        
        { data.map(item=>{

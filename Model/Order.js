@@ -18,6 +18,10 @@ const orderSchema = mongoose.Schema({
         type:String,
         require:true
     },
+    doc:{
+        type:String,
+        require:true
+    },
     
     date:{
         type:Date,

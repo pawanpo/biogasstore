@@ -83,6 +83,7 @@ router.get('/creditor/:id',RequireLogin,(req,res)=>{
                             return res.status(422).json({error:err})
                         }
 
+                        console.log("credits to show")
                         res.json({customer,credits})
                     })
             }).catch(err=>{
@@ -111,46 +112,9 @@ router.delete('/deleteCredit/:id',RequireLogin,(req,res)=>{
 
            sales.save()
                 .then(sales=>{
+                    console.log("Added to sales")
                     res.json({result,sales})
                 })
-
-                    
-             
-         }).catch(err=>{
-             console.log(err)
-         })
- 
-     
- })
-  
- 
- })
-
-
-
-router.delete('/deleteSale/:id',RequireLogin,(req,res)=>{
-
-    Sales.findOne({_id:req.params.id})
-    .exec((err,post)=>{
-     if(err || !post){
-         return res.status(422).json({error:err})
-     }
-         post.remove()
-         .then(result=>{
-
-
-        //    Stock.findOneAndUpdate(
-        //     {name:result.name},
-        //     { $inc: { quantity : +result.quantity} })
-
-        // .then(ress=>{
-        //     console.log("sdf",ress)
-        // })
-
-
-
-                            res.json({result})             
-
 
                     
              
@@ -169,7 +133,7 @@ router.delete('/deleteSale/:id',RequireLogin,(req,res)=>{
     let searchStock = new RegExp("^"+req.body.query);
     Credit.find({
         "$or": [
-            { item: { '$regex': searchStock } }]    
+            { item: { '$regex': searchStock,$options: "i" } }]    
        
     })
     .then(credit=>{
