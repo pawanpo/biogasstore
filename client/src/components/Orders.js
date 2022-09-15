@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { setServers } from 'dns'
 import Header from './Header';
 
-const Home=()=>{
+const OrderPage=()=>{
   const history = useHistory()
   const {state, dispatch}= useContext(UserContex)
 
@@ -90,46 +90,6 @@ const order=()=>{
 
    }
 
-
-   const serviceBook=()=>{
-
-
-    
-    fetch("/addService",{
-      method:"post",
-      headers:{
-          "Content-Type":"application/json",
-
-      },
-      body: JSON.stringify({
-        
-       
-        name, phone, email,date:startDate ,address,description,serviceType
-        
-      })
-      
-  }).then(res=>res.json())
-  .then(data=> {
-
-    console.log(data.service)
-     
-      if(data.error){
-        toast.error(data.error)      
-      }
-      else{
-
-        toast.success("Delivered Successfully")      
-
-        // console.log(data.result)
-        
-           history.push(`/home`)
-      }
-  })
-  .catch(err=>{
-      console.log(err)
-  })
-
-   }
 
    const upload=({target:{files}})=>{
 
@@ -312,4 +272,4 @@ return(
 }
 
 
-export default Home
+export default OrderPage

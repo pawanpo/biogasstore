@@ -11,7 +11,7 @@ import Sales from './components/Sales';
 import AllSales from './components/AllSales';
 import Customer from './components/Customer';
 import Expense from './components/Expense';
-import Orders from './components/Orders'
+import OrderPage from './components/Orders'
 import {reducer,initialState} from './reducers/userReducer'
 import Shop from './components/Shop';
 import Products from './components/Products';
@@ -36,11 +36,14 @@ const Routing = ()=>{
      
     }else{
 
-      if(history.location.pathname.startsWith('/order')) { history.push('/order') }
-      if(history.location.pathname.startsWith('/products')) { history.push('/products') }
+   
       if(history.location.pathname.startsWith('/login')) { history.push('/login') }
+      else 
+      if(history.location.pathname.startsWith('/products')) { history.push('/products') }
+      else if(history.location.pathname.startsWith('/placeorder')) { history.push('/placeorder') }
+
     else{
-      history.push('/shop')
+      history.push('/home')
 
     }
     }
@@ -66,9 +69,9 @@ const Routing = ()=>{
         <Route path='/sales'>
           <Sales />
         </Route>
-        <Route path='/orders'>
+        {/* <Route path='/order'>
           <Orders />
-        </Route>
+        </Route> */}
         <Route path='/allSales'>
           <AllSales />
         </Route>
@@ -82,7 +85,14 @@ const Routing = ()=>{
           <Customer />
         </Route>
 
-        
+        {/* <Route exact path="/products">
+            <Products />
+          </Route>
+         
+          <Route exact path="/placeorder">
+            <OrderPage />
+          </Route> */}
+         
 
     </Switch>
   )
@@ -99,16 +109,17 @@ function App() {
 
         <BrowserRouter>
         
-          <Route exact path="/">
+          <Route exact path="/home">
             <Shop />
           </Route>
          
         
-          <Route exact path="/order">
-            <Orders />
-          </Route>
           <Route exact path="/products">
             <Products />
+          </Route>
+         
+          <Route exact path="/placeorder">
+            <OrderPage />
           </Route>
          
           
